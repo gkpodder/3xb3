@@ -1,5 +1,6 @@
-#L is a list of numbers
 import random
+
+#L is a list of numbers
 def insertion_sort2(L):
   for i in range(1,len(L)):
     value = L[i]

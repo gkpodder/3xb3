@@ -43,6 +43,51 @@ def insert(L, i):
         else:
             return
 
+# This is the variation of Insertion Sort
+def insertion_sort2(L):
+  for i in range(1,len(L)):
+    value = L[i]
+    while i > 0:
+      if value < L[i-1]:
+        L[i] = L[i-1]
+      else:
+        L[i] = value
+        break
+      i = i - 1
+
+    if i == 0:
+      L[i] = value
+
+  return L
+
+#Part 1 Experiment 2 Insertion Sort v.s. Insertion Sort 2 Testing
+testCasesList = [create_random_list(10,10),create_random_list(50,50),create_random_list(100,100),create_random_list(250,250),
+             create_random_list(500,500),create_random_list(750,750),create_random_list(1000,1000),create_random_list(1250,1250),
+             create_random_list(1500,1500),create_random_list(2000,2000),create_random_list(2500,2500),create_random_list(3500,3500)
+             ]
+testTimes = {"insertion_sort": [], "insertion_sort2": []}
+testLengths = []
+
+for testCase in testCasesList:
+    insertionSortTime = timeit.timeit(lambda: insertion_sort(testCase),number = 10)
+    insertionSort2Time = timeit.timeit(lambda: insertion_sort2(testCase),number = 10)
+    testTimes["insertion_sort"].append(insertionSortTime)
+    testTimes["insertion_sort2"].append(insertionSort2Time)
+    testLengths.append(len(testCase))
+
+print("Insertion Sort times: {}".format(testTimes["insertion_sort"]))
+print("Insertion Sort 2 times: {}".format(testTimes["insertion_sort2"]))
+
+plt.plot(testLengths, testTimes["insertion_sort"],label="insertion_sort", color = "red")
+plt.plot(testLengths,testTimes["insertion_sort2"],label="insertion_sort2", color = "blue")
+plt.xlabel("List Length")
+plt.ylabel("Elapsed Time")
+plt.title("Insertion Sort vs Modified Insertion Sort")
+plt.legend()
+
+plt.show()
+
+
 
 # ******************* Bubble sort code *******************
 
@@ -83,7 +128,8 @@ for L in Test_cases:
     times.get("selection_sort").append(time3)
     list_length.append(len(L))
 
-print(times["bubble_sort"])
+#uncomment this print statement
+#print(times["bubble_sort"])
 # Extract sorting times into a list
 sorting_times = [times["insertion_sort"], times["bubble_sort"], times["selection_sort"]]
 
@@ -101,8 +147,9 @@ ax.set_ylabel("Time")
 ax.set_title("Sorting Algo Time vs. List Length")
 ax.legend()
 
+#uncomment the plot display
 # Show the plot
-plt.show()
+#plt.show()
 
 
 
