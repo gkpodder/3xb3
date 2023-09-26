@@ -98,7 +98,54 @@ def bubble_sort(L):
             if L[j] > L[j+1]:
                 swap(L, j, j+1)
 
+#This is variation of Bubble Sort
+def bubble_sort2(L):
+    for i in range(len(L)):
+        val = None
 
+        for j in range(len(L) - 1 - i):
+            if val is None:
+                if L[j] > L[j+1]:
+                    val = L[j]
+                    L[j] = L[j+1]
+            
+            else:
+                if val > L[j+1]:
+                    L[j] = L[j+1]
+                
+                else:
+                    L[j] = val
+                    val = None
+        
+        if val is not None: 
+            L[len(L) - 1 - i] = val
+
+#Part 1 Experiment 2 Bubble Sort v.s. Bubble Sort 2 Testing
+testCasesList = [create_random_list(10,10),create_random_list(50,50),create_random_list(100,100),create_random_list(250,250),
+             create_random_list(500,500),create_random_list(750,750),create_random_list(1000,1000),create_random_list(1250,1250),
+             create_random_list(1500,1500),create_random_list(2000,2000),create_random_list(2500,2500),create_random_list(3500,3500)
+             ]
+testTimes = {"bubble_sort": [], "bubble_sort2": []}
+testLengths = []
+
+for testCase in testCasesList:
+    bubbleSortTime = timeit.timeit(lambda: bubble_sort(testCase),number = 10)
+    bubbleSort2Time = timeit.timeit(lambda: bubble_sort2(testCase),number = 10)
+    testTimes["bubble_sort"].append(bubbleSortTime)
+    testTimes["bubble_sort2"].append(bubbleSort2Time)
+    testLengths.append(len(testCase))
+
+print("Bubble Sort times: {}".format(testTimes["bubble_sort"]))
+print("Bubble Sort 2 times: {}".format(testTimes["bubble_sort2"]))
+
+plt.plot(testLengths, testTimes["bubble_sort"],label="bubble_sort", color = "red")
+plt.plot(testLengths,testTimes["bubble_sort2"],label="bubble_sort2", color = "blue")
+plt.xlabel("List Length")
+plt.ylabel("Elapsed Time")
+plt.title("Bubble Sort vs Modified Bubble Sort")
+plt.legend()
+
+plt.show()
 # ******************* Selection sort code *******************
 
 # Traditional Selection sort
