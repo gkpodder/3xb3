@@ -198,5 +198,40 @@ ax.legend()
 # Show the plot
 #plt.show()
 
+#Experiment 3
+length=500
+max_val=800
+
+testTimes = {"insertion_sort": [], "bubble_sort": [],"selection_sort": []}
+for num_swaps in range(0,500,10):
+    list_insert=create_near_sorted_list(length,max_val,num_swaps)
+    insertion_sort_time=timeit.timeit(lambda:insertion_sort(list_insert),number=10)
+    testTimes["insertion_sort"].append(insertion_sort_time)
+
+    list_bubble=create_near_sorted_list(length,max_val,num_swaps)
+    bubble_sort_time=timeit.timeit(lambda:bubble_sort(list_bubble),number=10)
+    testTimes["bubble_sort"].append(bubble_sort_time)
+
+    list_select=create_near_sorted_list(length,max_val,num_swaps)
+    selection_sort_time=timeit.timeit(lambda:selection_sort(list_select),number=10)
+    testTimes["selection_sort"].append(selection_sort_time)
+    print("done")
+
+x_values = list(range(0, 500, 10))
+
+# Plotting data for each sorting algorithm with specific colors
+plt.plot(x_values, testTimes["insertion_sort"], label='Insertion Sort', color='red')
+plt.plot(x_values, testTimes["bubble_sort"], label='Bubble Sort', color='green')
+plt.plot(x_values, testTimes["selection_sort"], label='Selection Sort', color='blue')
+
+# Adding labels, title, and legend
+plt.xlabel('Number of Swaps')
+plt.ylabel('Elapsed time in seconds')
+plt.title('Swaps vs Time')
+plt.legend()
+
+# Display the plot
+plt.show()
+
 
 
