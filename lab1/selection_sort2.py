@@ -1,12 +1,6 @@
-'''
-This code has a bug. Currently working on fixing it
-'''
-
-
-#L is a list
 import random
 
-
+#L is a list
 def selection_sort2(L):
   low = 0
   high = len(L)-1
@@ -28,13 +22,13 @@ def selection_sort2(L):
     temp1 = L[low]
     L[low] = minValue
     L[minIndex] = temp1 
-      
+
     temp2 = L[high]
     L[high] = maxValue
 
-    if L[minIndex] == maxValue:  
+    if low == maxIndex:  
       L[minIndex] = temp2
- 
+
     else:
       L[maxIndex] = temp2
     
@@ -48,8 +42,9 @@ def create_random_list(length, max_value):
     return [random.randint(0, max_value) for _ in range(length)]
 
 def main():
-  #sampleList = create_random_list(7,23)
-  sampleList = [19,20,19,23,4,11,21]
+  sampleList = create_random_list(11,1000)
+  #sampleList = [10,9,7,4,2,1,3]
+  #sampleList = [19,20,19,23,4,11,21]
   print("Unsorted List: {}".format(sampleList))
   print("Sorted List: {}".format(selection_sort2(sampleList)))
 
@@ -57,32 +52,3 @@ main()
 
 
 
-
-
-def Bugselection_sort2(L):
-  low = 0
-  high = len(L)-1
-  while (low < high):
-    minIndex = low
-    maxIndex = high
-    for i in range(low,high + 1):
-      #logic of adjusting min and max index
-      if L[i] < L[minIndex]:
-        minIndex = i
-
-      if L[i] > L[maxIndex]:
-        maxIndex = i
-    
-    #swapping logic
-    temp1 = L[low]
-    L[low] = L[minIndex]
-    L[minIndex] = temp1 
-      
-    temp2 = L[high]
-    L[high] = L[maxIndex]
-    L[maxIndex] = temp2
-
-    low += 1
-    high -= 1
-
-  return L
