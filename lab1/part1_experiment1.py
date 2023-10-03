@@ -1,7 +1,3 @@
-"""
-This file corresponds to the first graded lab of 2XC3.
-Feel free to modify and/or add functions to this file.
-"""
 import random
 import timeit
 import matplotlib.pyplot as plt
