@@ -133,9 +133,28 @@ def DFS2(G, node1, node2, visited=None):
 
     return []
 
+#BFS3 Predecessor Dictionary
+def BFS3(G,node1):
+    queue = deque([node1])
+    predDictionary = {}
+    marked = {node1:True}
+    for node in G.adj:
+        if node != node1:
+            marked[node] = False
+            
+    while len(queue) != 0:
+        currentNode = queue.popleft()
 
+        for adjacentNode in G.adj[currentNode]:
+            if marked[adjacentNode] == False:
+                queue.append(adjacentNode)
+                marked[adjacentNode] = True
+                predDictionary[adjacentNode] = currentNode 
+    
+    return predDictionary
+
+'''
 # test case
-
 # Create a adj_list with 6 nodes and 7 edges
 g = Graph(11)
 g.add_edge(0, 1)
@@ -150,3 +169,49 @@ path1 = BFS2(g, 0, 5)
 path2 = DFS2(g, 0, 5)
 
 print(path1, " ", path2)
+'''
+
+#BFS3Testing
+#Graph
+testGraph = Graph(6)
+testGraph.add_edge(0,1)
+testGraph.add_edge(0,2)
+testGraph.add_edge(1,3)
+testGraph.add_edge(2,3)
+testGraph.add_edge(2,4)
+testGraph.add_edge(4,3)
+testGraph.add_edge(3,5)
+pred1 = BFS3(testGraph,0)
+pred2 = BFS3(testGraph,1)
+#print(pred1)
+#print(pred2)
+
+test2 = Graph(7)
+test2.add_edge(0,1)
+test2.add_edge(0,2)
+test2.add_edge(0,3)
+test2.add_edge(1,2)
+test2.add_edge(2,3)
+test2.add_edge(1,5)
+test2.add_edge(2,4)
+test2.add_edge(3,6)
+test2.add_edge(5,4)
+test2.add_edge(4,6)
+pred3 = BFS3(test2,3)
+pred4 = BFS3(test2,4)
+#print(pred3)
+#print(pred4)
+
+test3 = Graph(9)
+test3.add_edge(0,3)
+test3.add_edge(1,2)
+test3.add_edge(2,3)
+test3.add_edge(3,6)
+test3.add_edge(3,4)
+#print(test3.adj)
+pred5 = BFS3(test3,3)
+pred6 = BFS3(test3,0)
+pred7 = BFS3(test3,5)
+print(pred5)
+print(pred6)
+print(pred7)
