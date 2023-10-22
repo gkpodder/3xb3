@@ -179,6 +179,21 @@ def DFS3(G,node1,marked = None, predDictionary = None):
 
 
 
+#is_connected function
+def is_connected(G):
+    for startNode in G.adj:
+        #check if there's a path from startNode to all other nodes in the graph (excluding itself)
+        for endNode in G.adj:
+            if startNode != endNode:
+                possiblePath = BFS(G,startNode,endNode)
+                if possiblePath == False:
+                    return False
+                    
+                
+    #For each node in the graph,there is a path from that node to all other nodes in the graph
+    return True
+
+
 
 '''
 # test case
@@ -198,6 +213,7 @@ path2 = DFS2(g, 0, 5)
 print(path1, " ", path2)
 '''
 
+'''
 #BFS3Testing, DFS3Testing
 #Graph
 testGraph = Graph(6)
@@ -257,3 +273,73 @@ print(pred7)
 #print(pred5)
 #print(pred6)
 #print(pred7)
+'''
+
+#connected graph testing
+graph1 = Graph(6)
+graph1.add_edge(0,1)
+graph1.add_edge(0,2)
+graph1.add_edge(1,3)
+graph1.add_edge(2,3)
+graph1.add_edge(2,4)
+graph1.add_edge(4,3)
+graph1.add_edge(3,5)
+#print(is_connected(graph1))
+
+graph2 = Graph(7)
+graph2.add_edge(0,1)
+graph2.add_edge(0,2)
+graph2.add_edge(0,3)
+graph2.add_edge(1,2)
+graph2.add_edge(2,3)
+graph2.add_edge(1,5)
+graph2.add_edge(2,4)
+graph2.add_edge(3,6)
+graph2.add_edge(5,4)
+graph2.add_edge(4,6)
+#print(graph2.adj)
+#value = is_connected(graph2)
+#print(value)
+
+graph3 = Graph(9)
+graph3.add_edge(0,3)
+graph3.add_edge(1,2)
+graph3.add_edge(2,3)
+graph3.add_edge(3,6)
+graph3.add_edge(3,4)
+#print(graph3.adj)
+#value = is_connected(graph3)
+#print(value)
+
+graph4 = Graph(6)
+graph4.add_edge(0,1)
+graph4.add_edge(1,2)
+graph4.add_edge(1,4)
+graph4.add_edge(2,3)
+graph4.add_edge(4,3)
+#print(graph4.adj)
+#value = is_connected(graph4)
+#print(value)
+
+graph5 = Graph(7)
+graph5.add_edge(0,1)
+graph5.add_edge(1,2)
+graph5.add_edge(2,3)
+graph5.add_edge(3,4)
+graph5.add_edge(4,5)
+#print(graph5.adj)
+#value = is_connected(graph5)
+#print(value)
+
+graph6 = Graph(7)
+#print(graph6.adj)
+#value = is_connected(graph6)
+#print(value)
+
+graph7 = Graph(4)
+graph7.add_edge(0,1)
+graph7.add_edge(0,2)
+graph7.add_edge(1,3)
+graph7.add_edge(2,3)
+#value = is_connected(graph7)
+#print(value)
