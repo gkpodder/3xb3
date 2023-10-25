@@ -1,4 +1,6 @@
 from collections import deque
+import copy
+import random
 
 
 # Undirected graph using an adjacency list
@@ -193,7 +195,114 @@ def is_connected(G):
     #For each node in the graph,there is a path from that node to all other nodes in the graph
     return True
 
+#approx2 algorithm for Vertex Cover Problem
+def approx2(G):
+    C = set()
+    possibleVertexCover = False
 
+    #set up list of vertices
+    vertexList = []
+    for node in G.adj:
+        vertexList.append(node)
+
+    while (possibleVertexCover == False):
+
+        #pick a random vertex from G that's already not in C, and add it to C
+        while (True):
+            randomIndex = random.randint(0,len(vertexList)-1)
+            chosenVertex = vertexList[randomIndex]
+            if chosenVertex not in C:
+                C.add(chosenVertex)
+                break
+
+        possibleVertexCover = is_vertex_cover(G,C)
+
+    return C
+
+        
+    
+#approx2 testing
+graph6 = Graph(7)
+value = approx2(graph6)
+print(value)
+
+'''
+graph5 = Graph(7)
+graph5.add_edge(0,1)
+graph5.add_edge(1,2)
+graph5.add_edge(2,3)
+graph5.add_edge(3,4)
+graph5.add_edge(4,5)
+value = approx2(graph5)
+print(value)
+'''
+
+'''
+graph4 = Graph(6)
+graph4.add_edge(0,1)
+graph4.add_edge(1,2)
+graph4.add_edge(1,4)
+graph4.add_edge(2,3)
+graph4.add_edge(4,3)
+value = approx2(graph4)
+print(value)
+'''
+
+
+'''
+graph3 = Graph(9)
+graph3.add_edge(0,3)
+graph3.add_edge(1,2)
+graph3.add_edge(2,3)
+graph3.add_edge(3,6)
+graph3.add_edge(3,4)
+value = approx2(graph3)
+print(value)
+'''
+
+'''
+graph2 = Graph(7)
+graph2.add_edge(0,1)
+graph2.add_edge(0,2)
+graph2.add_edge(0,3)
+graph2.add_edge(1,2)
+graph2.add_edge(2,3)
+graph2.add_edge(1,5)
+graph2.add_edge(2,4)
+graph2.add_edge(3,6)
+graph2.add_edge(5,4)
+graph2.add_edge(4,6)
+value = approx2(graph2)
+print(value)
+'''
+
+'''
+graph1 = Graph(6)
+graph1.add_edge(0,1)
+graph1.add_edge(0,2)
+graph1.add_edge(1,3)
+graph1.add_edge(2,3)
+graph1.add_edge(2,4)
+graph1.add_edge(4,3)
+graph1.add_edge(3,5)
+value = approx2(graph1)
+print(value)
+'''
+
+'''
+#deep copying graph object Testing
+randomSampleG = Graph(5)
+randomSampleG.add_edge(0,1)
+randomSampleG.add_edge(0,2)
+randomSampleG.add_edge(1,3)
+randomSampleG.add_edge(2,3)
+print(randomSampleG.adj)
+copyG = copy.deepcopy(randomSampleG)
+print(copyG.adj)
+copyG.add_edge(1,4)
+print(randomSampleG.adj)
+print(copyG.adj)
+'''
 
 '''
 # test case
@@ -274,7 +383,7 @@ print(pred7)
 #print(pred6)
 #print(pred7)
 '''
-
+'''
 #connected graph testing
 graph1 = Graph(6)
 graph1.add_edge(0,1)
@@ -343,3 +452,4 @@ graph7.add_edge(1,3)
 graph7.add_edge(2,3)
 #value = is_connected(graph7)
 #print(value)
+'''
