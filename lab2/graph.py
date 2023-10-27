@@ -260,7 +260,7 @@ def plot_cp(x, n, m, step):
     plot.legend()
     plot.show()
 
-plot_cp(100, 100, 100, 1)
+# plot_cp(100, 100, 100, 1)
 
 
 def approx2(G):
