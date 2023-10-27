@@ -1,6 +1,7 @@
 from collections import deque
 import copy
 import random
+import matplotlib.pyplot as plot
 
 
 # Undirected graph using an adjacency list
@@ -29,6 +30,9 @@ class Graph:
 
     def number_of_nodes():
         return len()
+
+    def get_size(self):
+        return len(self.adj)
 
 
 # Breadth First Search
@@ -98,6 +102,8 @@ def MVC(G):
                 min_cover = subset
     return min_cover
 
+# BFS2 and DFS2 Implementation
+
 
 def BFS2(G, node1, node2):
     visited = set()
@@ -135,15 +141,17 @@ def DFS2(G, node1, node2, visited=None):
 
     return []
 
-#BFS3 Predecessor Dictionary
-def BFS3(G,node1):
+# BFS3 Predecessor Dictionary
+
+
+def BFS3(G, node1):
     queue = deque([node1])
     predDictionary = {}
-    marked = {node1:True}
+    marked = {node1: True}
     for node in G.adj:
         if node != node1:
             marked[node] = False
-            
+
     while len(queue) != 0:
         currentNode = queue.popleft()
 
@@ -151,77 +159,76 @@ def BFS3(G,node1):
             if marked[adjacentNode] == False:
                 queue.append(adjacentNode)
                 marked[adjacentNode] = True
-                predDictionary[adjacentNode] = currentNode 
-    
+                predDictionary[adjacentNode] = currentNode
+
     return predDictionary
 
 
-#DFS3 Predecessor Dictionary
-def DFS3(G,node1,marked = None, predDictionary = None):
+# DFS3 Predecessor Dictionary
+def DFS3(G, node1, marked=None, predDictionary=None):
     currentNode = node1
 
     if not marked:
-        marked = {currentNode:True}
+        marked = {currentNode: True}
         for node in G.adj:
             if node != currentNode:
                 marked[node] = False
-    
+
     if not predDictionary:
         predDictionary = {}
 
-    #explore adjacent nodes
+    # explore adjacent nodes
     for adjacentNode in G.adj[currentNode]:
         if marked[adjacentNode] == False:
             marked[adjacentNode] = True
             predDictionary[adjacentNode] = currentNode
-            #pass the updated marked dictionary and updated predDictionary
-            DFS3(G,adjacentNode,marked,predDictionary)
-        
+            # pass the updated marked dictionary and updated predDictionary
+            DFS3(G, adjacentNode, marked, predDictionary)
+
     return predDictionary
 
 
-
-#is_connected function
+# is_connected function
 def is_connected(G):
     for startNode in G.adj:
-        #check if there's a path from startNode to all other nodes in the graph (excluding itself)
+        # check if there's a path from startNode to all other nodes in the graph (excluding itself)
         for endNode in G.adj:
             if startNode != endNode:
-                possiblePath = BFS(G,startNode,endNode)
+                possiblePath = BFS(G, startNode, endNode)
                 if possiblePath == False:
                     return False
-                    
-                
-    #For each node in the graph,there is a path from that node to all other nodes in the graph
+
+    # For each node in the graph,there is a path from that node to all other nodes in the graph
     return True
 
-#approx2 algorithm for Vertex Cover Problem
+# approx2 algorithm for Vertex Cover Problem
+
+
 def approx2(G):
     C = set()
     possibleVertexCover = False
 
-    #set up list of vertices
+    # set up list of vertices
     vertexList = []
     for node in G.adj:
         vertexList.append(node)
 
     while (possibleVertexCover == False):
 
-        #pick a random vertex from G that's already not in C, and add it to C
+        # pick a random vertex from G that's already not in C, and add it to C
         while (True):
-            randomIndex = random.randint(0,len(vertexList)-1)
+            randomIndex = random.randint(0, len(vertexList)-1)
             chosenVertex = vertexList[randomIndex]
             if chosenVertex not in C:
                 C.add(chosenVertex)
                 break
 
-        possibleVertexCover = is_vertex_cover(G,C)
+        possibleVertexCover = is_vertex_cover(G, C)
 
     return C
 
-        
-    
-#approx2 testing
+
+# approx2 testing
 graph6 = Graph(7)
 value = approx2(graph6)
 print(value)
@@ -453,3 +460,81 @@ graph7.add_edge(2,3)
 #value = is_connected(graph7)
 #print(value)
 '''
+
+# Independent set problem
+
+# utility funcs
+
+
+def create_random_graph(i, j):
+    graph = Graph(i)
+    edges = []
+    for x in range(i):
+        for y in range(x+1, i):
+            edges.append((x, y))
+    random.shuffle(edges)
+    for k in range(j):
+        (x, y) = edges[k]
+        graph.add_edge(x, y)
+    return graph
+
+
+def is_independent_set(G, C):
+    for start in C:
+        for end in G.adj[start]:
+            if end in C:
+                return False
+    return True
+
+
+def max_independent_set(G):
+    node = [i for i in range(G.get_size())]
+    subsets = power_set(node)
+    max_set = set()
+    for subset in subsets:
+        if is_independent_set(G, subset):
+            if len(subset) > len(max_set):
+                max_set = subset
+    return max_set
+
+
+# test case for max_independent_set
+# graph7 = Graph(4)
+# graph7.add_edge(0, 1)
+# graph7.add_edge(0, 2)
+# graph7.add_edge(1, 3)
+# graph7.add_edge(2, 3)
+
+# result = set(max_independent_set(graph7))
+# expected_result = {2, 1}
+# assert result == expected_result
+
+
+def exp4(nodes, maxEdges):
+    size_plot = []
+    ttl1 = []
+    ttl2 = []
+    ttl3 = []
+
+    for i in range(maxEdges+1):
+        size_plot.append(i)
+        Graph = create_random_graph(nodes, i)
+        mVc = len(MVC(Graph))
+        mIs = len(max_independent_set(Graph))
+        ttl1.append(mVc)
+        ttl2.append(mIs)
+        ttl3.append(mVc + mIs)
+
+    # graph the experiment
+    plot.plot(size_plot, ttl1, label="MVC")
+    plot.plot(size_plot, ttl2, label="MIS")
+    plot.plot(size_plot, ttl3, label="MVC + MIS")
+
+    plot.ylabel("length")
+    plot.xlabel("number of edges")
+    plot.title("MVC size vs MIS size")
+    plot.legend()
+    plot.show()
+
+# runs the experiment4
+# exp4(10, 45)
