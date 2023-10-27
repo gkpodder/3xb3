@@ -105,6 +105,8 @@ def MVC(G):
 # BFS2 and DFS2 Implementation
 
 
+
+
 def BFS2(G, node1, node2):
     visited = set()
     queue = deque([(node1, [node1])])
@@ -187,6 +189,22 @@ def DFS3(G, node1, marked=None, predDictionary=None):
 
     return predDictionary
 
+def has_cycle(G):
+    visited = set()
+    def inner_cycle_detection(current, prev):
+        visited.add(current)
+        for neighbor in G.adj[current]:
+            if neighbor not in visited:
+                if inner_cycle_detection(neighbor, current):
+                    return True
+            elif neighbor != prev:
+                return True
+        return False
+    for node in G.adj:
+        if node not in visited:
+            if inner_cycle_detection(node, -1):
+                return True
+    return False
 
 # is_connected function
 def is_connected(G):
@@ -226,6 +244,47 @@ def approx2(G):
         possibleVertexCover = is_vertex_cover(G, C)
 
     return C
+
+def create_random_graph(i, j):
+    graph = Graph(i)
+    edges = []
+    for x in range(i):
+        for y in range(x+1, i):
+            edges.append((x, y))
+    random.shuffle(edges)
+    for k in range(j):
+        (x, y) = edges[k]
+        graph.add_edge(x, y)
+    return graph
+
+
+# exp1 code
+def calc_cp(x, n, m, step):
+    cycle_probabilities = []
+    edge_counts = list(range(0, n+1, step))
+
+    for j in edge_counts:
+        cycle_count = 0
+        for _ in range(m):
+            G = create_random_graph(x, j)
+            if has_cycle(G):
+                cycle_count += 1
+
+        cycle_probabilities.append(cycle_count / m)
+    return edge_counts, cycle_probabilities
+
+
+def plot_cp(x, n, m, step):
+    edge_counts, cycle_probabilities = calc_cp(x, n, m, step)
+    
+    plot.plot(edge_counts, cycle_probabilities, label=f"Nodes = {x}")
+    plot.ylabel("Cycle Probability")
+    plot.xlabel("Number of edges")
+    plot.title("Edges vs Cycle Probability")
+    plot.legend()
+    plot.show()
+
+plot_cp(100, 100, 100, 1)
 
 
 # approx2 testing
@@ -464,19 +523,6 @@ graph7.add_edge(2,3)
 # Independent set problem
 
 # utility funcs
-
-
-def create_random_graph(i, j):
-    graph = Graph(i)
-    edges = []
-    for x in range(i):
-        for y in range(x+1, i):
-            edges.append((x, y))
-    random.shuffle(edges)
-    for k in range(j):
-        (x, y) = edges[k]
-        graph.add_edge(x, y)
-    return graph
 
 
 def is_independent_set(G, C):
