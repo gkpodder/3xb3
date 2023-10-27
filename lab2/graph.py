@@ -221,30 +221,6 @@ def is_connected(G):
 
 # approx2 algorithm for Vertex Cover Problem
 
-
-def approx2(G):
-    C = set()
-    possibleVertexCover = False
-
-    # set up list of vertices
-    vertexList = []
-    for node in G.adj:
-        vertexList.append(node)
-
-    while (possibleVertexCover == False):
-
-        # pick a random vertex from G that's already not in C, and add it to C
-        while (True):
-            randomIndex = random.randint(0, len(vertexList)-1)
-            chosenVertex = vertexList[randomIndex]
-            if chosenVertex not in C:
-                C.add(chosenVertex)
-                break
-
-        possibleVertexCover = is_vertex_cover(G, C)
-
-    return C
-
 def create_random_graph(i, j):
     graph = Graph(i)
     edges = []
@@ -285,6 +261,31 @@ def plot_cp(x, n, m, step):
     plot.show()
 
 plot_cp(100, 100, 100, 1)
+
+
+def approx2(G):
+    C = set()
+    possibleVertexCover = False
+
+    # set up list of vertices
+    vertexList = []
+    for node in G.adj:
+        vertexList.append(node)
+
+    while (possibleVertexCover == False):
+
+        # pick a random vertex from G that's already not in C, and add it to C
+        while (True):
+            randomIndex = random.randint(0, len(vertexList)-1)
+            chosenVertex = vertexList[randomIndex]
+            if chosenVertex not in C:
+                C.add(chosenVertex)
+                break
+
+        possibleVertexCover = is_vertex_cover(G, C)
+
+    return C
+
 
 
 # approx2 testing
