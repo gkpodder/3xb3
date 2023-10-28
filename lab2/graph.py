@@ -206,20 +206,18 @@ def has_cycle(G):
                 return True
     return False
 
-# is_connected function
 def is_connected(G):
-    for startNode in G.adj:
-        # check if there's a path from startNode to all other nodes in the graph (excluding itself)
-        for endNode in G.adj:
-            if startNode != endNode:
-                possiblePath = BFS(G, startNode, endNode)
-                if possiblePath == False:
-                    return False
+    start_node = list(G.adj.keys())[0]
+    gone_to = set()
+    queue = deque([start_node])
+    while queue:
+        node = queue.popleft()
+        gone_to.add(node) 
+        for neighbor in G.adj[node]:
+            if neighbor not in gone_to:
+                queue.append(neighbor)
+    return len(gone_to) == len(G.adj)
 
-    # For each node in the graph,there is a path from that node to all other nodes in the graph
-    return True
-
-# approx2 algorithm for Vertex Cover Problem
 
 def create_random_graph(i, j):
     graph = Graph(i)
@@ -235,13 +233,13 @@ def create_random_graph(i, j):
 
 
 # exp1 code
-def calc_cp(x, n, m, step):
+def calc_cy_p(x, n, m, step):
     cycle_probabilities = []
     edge_counts = list(range(0, n+1, step))
 
     for j in edge_counts:
         cycle_count = 0
-        for _ in range(m):
+        for i in range(m):
             G = create_random_graph(x, j)
             if has_cycle(G):
                 cycle_count += 1
@@ -250,8 +248,8 @@ def calc_cp(x, n, m, step):
     return edge_counts, cycle_probabilities
 
 
-def plot_cp(x, n, m, step):
-    edge_counts, cycle_probabilities = calc_cp(x, n, m, step)
+def plot_cy_p(x, n, m, step):
+    edge_counts, cycle_probabilities = calc_cy_p(x, n, m, step)
     
     plot.plot(edge_counts, cycle_probabilities, label=f"Nodes = {x}")
     plot.ylabel("Cycle Probability")
@@ -260,7 +258,34 @@ def plot_cp(x, n, m, step):
     plot.legend()
     plot.show()
 
-# plot_cp(100, 100, 100, 1)
+# for graph testing:
+# plot_cy_p(100, 100, 100, 1)
+
+#exp2 code:
+def calc_con_p(x, n, m, step):
+    connected_probabilities = []
+    edge_counts = list(range(0, n+1, step))
+    for j in edge_counts:
+        connected_count = 0
+        for i in range(m):
+            G = create_random_graph(x, j)
+            if is_connected(G):
+                connected_count += 1
+
+        connected_probabilities.append(connected_count / m)
+    return edge_counts, connected_probabilities
+
+def plot_con_p(x, n, m, step):
+    edge_counts, connected_probabilities = calc_con_p(x, n, m, step)
+    plot.plot(edge_counts, connected_probabilities, label=f"Nodes = {x}")
+    plot.ylabel("Connected Probability")
+    plot.xlabel("Number of edges")
+    plot.title("Edges vs Connected Probability")
+    plot.legend()
+    plot.show()
+
+#call for experiment 2
+# plot_con_p(100, 1000, 100, 10)
 
 
 def approx2(G):
