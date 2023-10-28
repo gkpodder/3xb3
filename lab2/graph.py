@@ -28,8 +28,8 @@ class Graph:
             self.adj[node1].append(node2)
             self.adj[node2].append(node1)
 
-    def number_of_nodes():
-        return len()
+    def number_of_nodes(self):
+        return len(self.adj)
 
     def get_size(self):
         return len(self.adj)
@@ -103,8 +103,6 @@ def MVC(G):
     return min_cover
 
 # BFS2 and DFS2 Implementation
-
-
 
 
 def BFS2(G, node1, node2):
@@ -189,8 +187,10 @@ def DFS3(G, node1, marked=None, predDictionary=None):
 
     return predDictionary
 
+
 def has_cycle(G):
     visited = set()
+
     def inner_cycle_detection(current, prev):
         visited.add(current)
         for neighbor in G.adj[current]:
@@ -206,13 +206,14 @@ def has_cycle(G):
                 return True
     return False
 
+
 def is_connected(G):
     start_node = list(G.adj.keys())[0]
     gone_to = set()
     queue = deque([start_node])
     while queue:
         node = queue.popleft()
-        gone_to.add(node) 
+        gone_to.add(node)
         for neighbor in G.adj[node]:
             if neighbor not in gone_to:
                 queue.append(neighbor)
@@ -220,16 +221,37 @@ def is_connected(G):
 
 
 def create_random_graph(i, j):
-    graph = Graph(i)
-    edges = []
-    for x in range(i):
-        for y in range(x+1, i):
-            edges.append((x, y))
-    random.shuffle(edges)
-    for k in range(j):
-        (x, y) = edges[k]
-        graph.add_edge(x, y)
-    return graph
+    # graph = Graph(i)
+    # edges = []
+    # for x in range(i):
+    #     for y in range(x+1, i):
+    #         edges.append((x, y))
+    # random.shuffle(edges)
+    # for k in range(j):
+    #     (x, y) = edges[k]
+    #     graph.add_edge(x, y)
+    # return graph
+    # Create an empty graph with i nodes
+    random_graph = Graph(i)
+
+    # Calculate the maximum number of edges
+    max_edges = int((i * (i - 1)) / 2)
+
+    # Ensure j does not exceed the maximum number of edges
+    j = min(j, max_edges)
+
+    # Generate random edges
+    edges_added = 0
+    while edges_added < j:
+        node1 = random.randint(0, i - 1)
+        node2 = random.randint(0, i - 1)
+
+        # Ensure node1 and node2 are distinct and the edge doesn't already exist
+        if node1 != node2 and not random_graph.are_connected(node1, node2):
+            random_graph.add_edge(node1, node2)
+            edges_added += 1
+
+    return random_graph
 
 
 # exp1 code
@@ -250,7 +272,7 @@ def calc_cy_p(x, n, m, step):
 
 def plot_cy_p(x, n, m, step):
     edge_counts, cycle_probabilities = calc_cy_p(x, n, m, step)
-    
+
     plot.plot(edge_counts, cycle_probabilities, label=f"Nodes = {x}")
     plot.ylabel("Cycle Probability")
     plot.xlabel("Number of edges")
@@ -261,7 +283,9 @@ def plot_cy_p(x, n, m, step):
 # for graph testing:
 # plot_cy_p(100, 100, 100, 1)
 
-#exp2 code:
+# exp2 code:
+
+
 def calc_con_p(x, n, m, step):
     connected_probabilities = []
     edge_counts = list(range(0, n+1, step))
@@ -275,6 +299,7 @@ def calc_con_p(x, n, m, step):
         connected_probabilities.append(connected_count / m)
     return edge_counts, connected_probabilities
 
+
 def plot_con_p(x, n, m, step):
     edge_counts, connected_probabilities = calc_con_p(x, n, m, step)
     plot.plot(edge_counts, connected_probabilities, label=f"Nodes = {x}")
@@ -284,18 +309,20 @@ def plot_con_p(x, n, m, step):
     plot.legend()
     plot.show()
 
-#call for experiment 2
+# call for experiment 2
 # plot_con_p(100, 1000, 100, 10)
 
-#approx1 algorithm for Vertex Cover Problem
+# approx1 algorithm for Vertex Cover Problem
+
+
 def approx1(G):
-    #make copy of G [deepcopy functionality is as expected]
+    # make copy of G [deepcopy functionality is as expected]
     graphCopy = copy.deepcopy(G)
     C = set()
     possibleVertexCover = False
-    
+
     while (possibleVertexCover == False):
-        #within graphCopy, find highestdegree vertex [functionality is as expected]
+        # within graphCopy, find highestdegree vertex [functionality is as expected]
         v = 0
         maxDegree = 0
         for node in graphCopy.adj:
@@ -305,19 +332,21 @@ def approx1(G):
                 v = node
         C.add(v)
 
-        #within graphCopy, remove v from the other nodes' adjacency list
-        #and clear v's adjacency list [functionality is as expected ]
+        # within graphCopy, remove v from the other nodes' adjacency list
+        # and clear v's adjacency list [functionality is as expected ]
         for node in graphCopy.adj[v]:
             graphCopy.adj[node].remove(v)
-        
+
         graphCopy.adj[v].clear()
 
-        #check if C is a possible vertex cover for original graph, G
-        possibleVertexCover = is_vertex_cover(G,C)
-    
+        # check if C is a possible vertex cover for original graph, G
+        possibleVertexCover = is_vertex_cover(G, C)
+
     return C
 
-#approx2 algorithm for Vertex Cover Problem
+# approx2 algorithm for Vertex Cover Problem
+
+
 def approx2(G):
     C = set()
     possibleVertexCover = False
@@ -340,7 +369,6 @@ def approx2(G):
         possibleVertexCover = is_vertex_cover(G, C)
 
     return C
-
 
 
 # approx2 testing
@@ -575,6 +603,133 @@ graph7.add_edge(2,3)
 #value = is_connected(graph7)
 #print(value)
 '''
+# exp3 approx experiments
+# utility functions
+
+
+def create_copy(G):
+    length = G.number_of_nodes()
+    graph = Graph(length)
+
+    for i in range(length):
+        for adj_vertex in G.adj[i]:
+            graph.adj[i].append(adj_vertex)
+
+    return graph
+
+
+def has_edges(G):
+    for i in range(G.number_of_nodes()):
+        if len(G.adj[i]) > 0:
+            return True
+    return False
+
+
+def removeNode(G, node1):
+    G.adj.pop(node1)
+    for node in G.adj.keys():
+        if node1 in G.adj[node]:
+            G.adj[node].remove(node1)
+
+
+def approx3(G):
+    C = set()
+    graph = create_copy(G)
+
+    def get_random_edge():
+        u, v = 0, 0
+        while True:
+            u = random.randint(0, graph.number_of_nodes() - 1)
+            if u not in C and len(graph.adj[u]) > 0:
+                break
+        v = graph.adj[u][random.randint(0, len(graph.adj[u]) - 1)]
+
+        return (u, v)
+
+    while has_edges(graph):
+        u, v = get_random_edge()
+        C.add(u)
+        C.add(v)
+        for adj_vertex in graph.adj[u]:
+            graph.adj[adj_vertex].remove(u)
+        graph.adj[u] = []
+        for adj_vertex in graph.adj[v]:
+            graph.adj[adj_vertex].remove(v)
+        graph.adj[v] = []
+
+    return C
+
+
+def rand_graph(nodes, edges):
+    G = Graph(nodes)
+    for i in range(edges):
+        while (True):
+            node1, node2 = random.randint(
+                0, nodes-1), random.randint(0, nodes-1)
+            if not (G.are_connected(node1, node2)):
+                G.add_edge(node1, node2)
+                break
+    return G
+
+
+def performance(approx, nodes, edges):
+    MVC_size = 0
+    approx_size = 0
+    for _ in range(0, 1000):
+        G = rand_graph(nodes, edges)
+        MVC_size += len(MVC(G))
+        if approx == 1:
+            approx_size += len(approx1(G))
+        elif approx == 2:
+            approx_size += len(approx2(G))
+        elif approx == 3:
+            approx_size += len(approx3(G))
+    performance = approx_size / MVC_size
+    return performance
+
+
+def MVC_exp1(nodes):
+    performance1, performance2, performance3 = list(), list(), list()
+    m = [1, 5, 10, 15, 30]
+    print(m)
+    for i in m:
+        performance1.append(performance(1, nodes, i))
+        performance2.append(performance(2, nodes, i))
+        performance3.append(performance(3, nodes, i))
+
+    plot.plot(m, performance1, label="approx1")
+    plot.plot(m, performance2, label="approx2")
+    plot.plot(m, performance3, label="approx3")
+
+    plot.xlabel('Number of Edges')
+    plot.ylabel('Performance')
+    plot.title('Performance vs Num Edges')
+    plot.legend(loc=1)
+    plot.show()
+
+
+def MVC_exp2(edge_density):
+    performance1, performance2, performance3 = list(), list(), list()
+    m = [4, 6, 8, 10, 12]  # num nodes
+    for i in m:
+        edges = (int)(i * edge_density)
+        performance1.append(performance(1, i, edges))
+        performance2.append(performance(2, i, edges))
+        performance3.append(performance(3, i, edges))
+    plot.plot(m, performance1, label="approx1")
+    plot.plot(m, performance2, label="approx2")
+    plot.plot(m, performance3, label="approx3")
+
+    plot.xlabel('Number of Nodes')
+    plot.ylabel('Performance')
+    plot.title('Performance vs Num Nodes')
+    plot.legend(loc=1)
+    plot.show()
+
+
+MVC_exp1(10)
+# MVC_exp2(0.5)
+
 
 # Independent set problem
 
