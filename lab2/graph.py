@@ -551,7 +551,7 @@ def MVC_exp3():
 # this runs each of the experiments
 
 
-MVC_exp3()
+# MVC_exp3()
 # MVC_exp1(10)
 # MVC_exp2(0.5)
 
