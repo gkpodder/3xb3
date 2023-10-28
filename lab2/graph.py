@@ -688,6 +688,24 @@ def performance(approx, nodes, edges):
     return performance
 
 
+def worst_case_performance(approx, nodes, edges):
+    MVC_size = 0
+    approx_size = 0
+    performance = 0
+    for _ in range(0, 1000):
+        G = rand_graph(nodes, edges)
+        MVC_size = len(MVC(G))
+
+        if approx == 1:
+            approx_size = len(approx1(G))
+        elif approx == 2:
+            approx_size = len(approx2(G))
+        elif approx == 3:
+            approx_size = len(approx3(G))
+        performance = max(performance, approx_size / MVC_size)
+    return performance
+
+
 def MVC_exp1(nodes):
     performance1, performance2, performance3 = list(), list(), list()
     m = [1, 5, 10, 15, 30]
@@ -727,6 +745,31 @@ def MVC_exp2(edge_density):
     plot.show()
 
 
+def MVC_exp3():
+    nodes = 5
+    m = [5, 10, 15, 25, 35]
+    worst_perform1, worst_perform2, worst_perform3 = list(), list(), list()
+    for i in m:
+        print("done")
+        worst_perform1.append(worst_case_performance(1, nodes, i))
+        print("done")
+        worst_perform2.append(worst_case_performance(2, nodes, i))
+        print("done")
+        worst_perform3.append(worst_case_performance(3, nodes, i))
+
+    print("hello")
+    plot.plot(m, worst_perform1, label="approx1")
+    plot.plot(m, worst_perform2, label="approx2")
+    plot.plot(m, worst_perform3, label="approx3")
+
+    plot.xlabel('Number of Edges')
+    plot.ylabel('Performance')
+    plot.title('Performance vs Num Edges')
+    plot.legend(loc=1)
+    plot.show()
+
+
+# MVC_exp3()
 MVC_exp1(10)
 # MVC_exp2(0.5)
 
