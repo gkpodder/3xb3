@@ -370,239 +370,56 @@ def approx2(G):
 
     return C
 
+#approx3 algorithm for Vertex Cover Problem
+#assumption: in approx3(G), G must be a graph with at least 1 edge
+def approx3(G):
 
-# approx2 testing
-graph6 = Graph(7)
-value = approx2(graph6)
-print(value)
+    #make copy of G [deepcopy functionality is as expected]
+    graphCopy = copy.deepcopy(G)
+    C = set()
+    possibleVertexCover = False
 
-'''
-graph5 = Graph(7)
-graph5.add_edge(0,1)
-graph5.add_edge(1,2)
-graph5.add_edge(2,3)
-graph5.add_edge(3,4)
-graph5.add_edge(4,5)
-value = approx2(graph5)
-print(value)
-'''
+    while (possibleVertexCover == False):
 
-'''
-graph4 = Graph(6)
-graph4.add_edge(0,1)
-graph4.add_edge(1,2)
-graph4.add_edge(1,4)
-graph4.add_edge(2,3)
-graph4.add_edge(4,3)
-value = approx2(graph4)
-print(value)
-'''
+        #within graphCopy, randomly pick an edge [works as expected]
+        while (True):
+            #set up list of vertices
+            vertexList = [] 
+            for node in graphCopy.adj:
+                vertexList.append(node)
+            
+            #pick random vertex, u
+            randomIndex = random.randint(0,len(vertexList)-1)
+            u = vertexList[randomIndex]
+
+            if len(graphCopy.adj[u]) > 0:
+                #within node u's adjacency list, pick another random vertex, v
+                anotherRandomIndex = random.randint(0,len(graphCopy.adj[u]) - 1)
+                v = graphCopy.adj[u][anotherRandomIndex]
+                C.add(u)
+                C.add(v)
+                break
+
+        #within graphCopy, remove u from the other nodes' adjacency list
+        #and clear u's adjacency list 
+        for node in graphCopy.adj[u]:
+            graphCopy.adj[node].remove(u)
+            
+        graphCopy.adj[u].clear()
+
+        #within graphCopy, remove v from the other nodes' adjacency list
+        #and clear v's adjacency list 
+        for node in graphCopy.adj[v]:
+            graphCopy.adj[node].remove(v)
+            
+        graphCopy.adj[v].clear()
+
+        #check if C is a possible vertex cover for original graph, G
+        possibleVertexCover = is_vertex_cover(G,C)
+
+    return C
 
 
-'''
-graph3 = Graph(9)
-graph3.add_edge(0,3)
-graph3.add_edge(1,2)
-graph3.add_edge(2,3)
-graph3.add_edge(3,6)
-graph3.add_edge(3,4)
-value = approx2(graph3)
-print(value)
-'''
-
-'''
-graph2 = Graph(7)
-graph2.add_edge(0,1)
-graph2.add_edge(0,2)
-graph2.add_edge(0,3)
-graph2.add_edge(1,2)
-graph2.add_edge(2,3)
-graph2.add_edge(1,5)
-graph2.add_edge(2,4)
-graph2.add_edge(3,6)
-graph2.add_edge(5,4)
-graph2.add_edge(4,6)
-value = approx2(graph2)
-print(value)
-'''
-
-'''
-graph1 = Graph(6)
-graph1.add_edge(0,1)
-graph1.add_edge(0,2)
-graph1.add_edge(1,3)
-graph1.add_edge(2,3)
-graph1.add_edge(2,4)
-graph1.add_edge(4,3)
-graph1.add_edge(3,5)
-value = approx2(graph1)
-print(value)
-'''
-
-'''
-#deep copying graph object Testing
-randomSampleG = Graph(5)
-randomSampleG.add_edge(0,1)
-randomSampleG.add_edge(0,2)
-randomSampleG.add_edge(1,3)
-randomSampleG.add_edge(2,3)
-print(randomSampleG.adj)
-copyG = copy.deepcopy(randomSampleG)
-print(copyG.adj)
-copyG.add_edge(1,4)
-print(randomSampleG.adj)
-print(copyG.adj)
-'''
-
-'''
-# test case
-# Create a adj_list with 6 nodes and 7 edges
-g = Graph(11)
-g.add_edge(0, 1)
-g.add_edge(1, 4)
-g.add_edge(1, 10)
-g.add_edge(4, 10)
-g.add_edge(4, 3)
-g.add_edge(3, 5)
-
-# Test BFS2 with node1 = 0 and node2 = 5
-path1 = BFS2(g, 0, 5)
-path2 = DFS2(g, 0, 5)
-
-print(path1, " ", path2)
-'''
-
-'''
-#BFS3Testing, DFS3Testing
-#Graph
-testGraph = Graph(6)
-testGraph.add_edge(0,1)
-testGraph.add_edge(0,2)
-testGraph.add_edge(1,3)
-testGraph.add_edge(2,3)
-testGraph.add_edge(2,4)
-testGraph.add_edge(4,3)
-testGraph.add_edge(3,5)
-#pred1 = DFS3(testGraph,0)
-#pred2 = DFS3(testGraph,1)
-#print(pred1)
-#print(pred2)
-#pred1 = BFS3(testGraph,0)
-#pred2 = BFS3(testGraph,1)
-#print(pred1)
-#print(pred2)
-
-test2 = Graph(7)
-test2.add_edge(0,1)
-test2.add_edge(0,2)
-test2.add_edge(0,3)
-test2.add_edge(1,2)
-test2.add_edge(2,3)
-test2.add_edge(1,5)
-test2.add_edge(2,4)
-test2.add_edge(3,6)
-test2.add_edge(5,4)
-test2.add_edge(4,6)
-#print(test2.adj)
-#pred3 = DFS3(test2,3)
-#pred4 = DFS3(test2,4)
-#print(pred3)
-#print(pred4)
-#pred3 = BFS3(test2,3)
-#pred4 = BFS3(test2,4)
-#print(pred3)
-#print(pred4)
-
-test3 = Graph(9)
-test3.add_edge(0,3)
-test3.add_edge(1,2)
-test3.add_edge(2,3)
-test3.add_edge(3,6)
-test3.add_edge(3,4)
-#print(test3.adj)
-pred5 = DFS3(test3,3)
-pred6 = DFS3(test3,0)
-pred7 = DFS3(test3,5)
-print(pred5)
-print(pred6)
-print(pred7)
-#pred5 = BFS3(test3,3)
-#pred6 = BFS3(test3,0)
-#pred7 = BFS3(test3,5)
-#print(pred5)
-#print(pred6)
-#print(pred7)
-'''
-'''
-#connected graph testing
-graph1 = Graph(6)
-graph1.add_edge(0,1)
-graph1.add_edge(0,2)
-graph1.add_edge(1,3)
-graph1.add_edge(2,3)
-graph1.add_edge(2,4)
-graph1.add_edge(4,3)
-graph1.add_edge(3,5)
-#print(is_connected(graph1))
-
-graph2 = Graph(7)
-graph2.add_edge(0,1)
-graph2.add_edge(0,2)
-graph2.add_edge(0,3)
-graph2.add_edge(1,2)
-graph2.add_edge(2,3)
-graph2.add_edge(1,5)
-graph2.add_edge(2,4)
-graph2.add_edge(3,6)
-graph2.add_edge(5,4)
-graph2.add_edge(4,6)
-#print(graph2.adj)
-#value = is_connected(graph2)
-#print(value)
-
-graph3 = Graph(9)
-graph3.add_edge(0,3)
-graph3.add_edge(1,2)
-graph3.add_edge(2,3)
-graph3.add_edge(3,6)
-graph3.add_edge(3,4)
-#print(graph3.adj)
-#value = is_connected(graph3)
-#print(value)
-
-graph4 = Graph(6)
-graph4.add_edge(0,1)
-graph4.add_edge(1,2)
-graph4.add_edge(1,4)
-graph4.add_edge(2,3)
-graph4.add_edge(4,3)
-#print(graph4.adj)
-#value = is_connected(graph4)
-#print(value)
-
-graph5 = Graph(7)
-graph5.add_edge(0,1)
-graph5.add_edge(1,2)
-graph5.add_edge(2,3)
-graph5.add_edge(3,4)
-graph5.add_edge(4,5)
-#print(graph5.adj)
-#value = is_connected(graph5)
-#print(value)
-
-graph6 = Graph(7)
-#print(graph6.adj)
-#value = is_connected(graph6)
-#print(value)
-
-graph7 = Graph(4)
-graph7.add_edge(0,1)
-graph7.add_edge(0,2)
-graph7.add_edge(1,3)
-graph7.add_edge(2,3)
-#value = is_connected(graph7)
-#print(value)
-'''
 # exp3 approx experiments
 # utility functions
 
