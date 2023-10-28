@@ -526,8 +526,8 @@ def MVC_exp2(edge_density):
 
 
 def MVC_exp3():
-    nodes = 5
-    m = [2, 4, 6, 8]
+    nodes = 8
+    m = [4, 8, 12, 16, 25, 30]
     worst_perform1, worst_perform2, worst_perform3 = list(), list(), list()
     for i in m:
         print("done")
@@ -550,7 +550,8 @@ def MVC_exp3():
 
 # this runs each of the experiments
 
-# MVC_exp3()
+
+MVC_exp3()
 # MVC_exp1(10)
 # MVC_exp2(0.5)
 
