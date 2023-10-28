@@ -287,7 +287,37 @@ def plot_con_p(x, n, m, step):
 #call for experiment 2
 # plot_con_p(100, 1000, 100, 10)
 
+#approx1 algorithm for Vertex Cover Problem
+def approx1(G):
+    #make copy of G [deepcopy functionality is as expected]
+    graphCopy = copy.deepcopy(G)
+    C = set()
+    possibleVertexCover = False
+    
+    while (possibleVertexCover == False):
+        #within graphCopy, find highestdegree vertex [functionality is as expected]
+        v = 0
+        maxDegree = 0
+        for node in graphCopy.adj:
+            numAdjacentNodes = len(graphCopy.adj[node])
+            if numAdjacentNodes > maxDegree:
+                maxDegree = numAdjacentNodes
+                v = node
+        C.add(v)
 
+        #within graphCopy, remove v from the other nodes' adjacency list
+        #and clear v's adjacency list [functionality is as expected ]
+        for node in graphCopy.adj[v]:
+            graphCopy.adj[node].remove(v)
+        
+        graphCopy.adj[v].clear()
+
+        #check if C is a possible vertex cover for original graph, G
+        possibleVertexCover = is_vertex_cover(G,C)
+    
+    return C
+
+#approx2 algorithm for Vertex Cover Problem
 def approx2(G):
     C = set()
     possibleVertexCover = False
