@@ -221,32 +221,19 @@ def is_connected(G):
 
 
 def create_random_graph(i, j):
-    # graph = Graph(i)
-    # edges = []
-    # for x in range(i):
-    #     for y in range(x+1, i):
-    #         edges.append((x, y))
-    # random.shuffle(edges)
-    # for k in range(j):
-    #     (x, y) = edges[k]
-    #     graph.add_edge(x, y)
-    # return graph
-    # Create an empty graph with i nodes
     random_graph = Graph(i)
 
-    # Calculate the maximum number of edges
-    max_edges = int((i * (i - 1)) / 2)
+    max_edges = int((i * (i - 1)) / 2)  # Maximum number of edges in a graph
 
-    # Ensure j does not exceed the maximum number of edges
-    j = min(j, max_edges)
+    j = min(j, max_edges)  # Ensure j is < max_edges
 
-    # Generate random edges
+    # random edge generation
     edges_added = 0
     while edges_added < j:
         node1 = random.randint(0, i - 1)
         node2 = random.randint(0, i - 1)
 
-        # Ensure node1 and node2 are distinct and the edge doesn't already exist
+        # ensure node1 and node2 are not the same node and that the edge does not already exist
         if node1 != node2 and not random_graph.are_connected(node1, node2):
             random_graph.add_edge(node1, node2)
             edges_added += 1
@@ -370,52 +357,55 @@ def approx2(G):
 
     return C
 
-#approx3 algorithm for Vertex Cover Problem
-#assumption: in approx3(G), G must be a graph with at least 1 edge
+# approx3 algorithm for Vertex Cover Problem
+# assumption: in approx3(G), G must be a graph with at least 1 edge
+
+
 def approx3(G):
 
-    #make copy of G [deepcopy functionality is as expected]
+    # make copy of G [deepcopy functionality is as expected]
     graphCopy = copy.deepcopy(G)
     C = set()
     possibleVertexCover = False
 
     while (possibleVertexCover == False):
 
-        #within graphCopy, randomly pick an edge [works as expected]
+        # within graphCopy, randomly pick an edge [works as expected]
         while (True):
-            #set up list of vertices
-            vertexList = [] 
+            # set up list of vertices
+            vertexList = []
             for node in graphCopy.adj:
                 vertexList.append(node)
-            
-            #pick random vertex, u
-            randomIndex = random.randint(0,len(vertexList)-1)
+
+            # pick random vertex, u
+            randomIndex = random.randint(0, len(vertexList)-1)
             u = vertexList[randomIndex]
 
             if len(graphCopy.adj[u]) > 0:
-                #within node u's adjacency list, pick another random vertex, v
-                anotherRandomIndex = random.randint(0,len(graphCopy.adj[u]) - 1)
+                # within node u's adjacency list, pick another random vertex, v
+                anotherRandomIndex = random.randint(
+                    0, len(graphCopy.adj[u]) - 1)
                 v = graphCopy.adj[u][anotherRandomIndex]
                 C.add(u)
                 C.add(v)
                 break
 
-        #within graphCopy, remove u from the other nodes' adjacency list
-        #and clear u's adjacency list 
+        # within graphCopy, remove u from the other nodes' adjacency list
+        # and clear u's adjacency list
         for node in graphCopy.adj[u]:
             graphCopy.adj[node].remove(u)
-            
+
         graphCopy.adj[u].clear()
 
-        #within graphCopy, remove v from the other nodes' adjacency list
-        #and clear v's adjacency list 
+        # within graphCopy, remove v from the other nodes' adjacency list
+        # and clear v's adjacency list
         for node in graphCopy.adj[v]:
             graphCopy.adj[node].remove(v)
-            
+
         graphCopy.adj[v].clear()
 
-        #check if C is a possible vertex cover for original graph, G
-        possibleVertexCover = is_vertex_cover(G,C)
+        # check if C is a possible vertex cover for original graph, G
+        possibleVertexCover = is_vertex_cover(G, C)
 
     return C
 
@@ -447,34 +437,6 @@ def removeNode(G, node1):
     for node in G.adj.keys():
         if node1 in G.adj[node]:
             G.adj[node].remove(node1)
-
-
-def approx3(G):
-    C = set()
-    graph = create_copy(G)
-
-    def get_random_edge():
-        u, v = 0, 0
-        while True:
-            u = random.randint(0, graph.number_of_nodes() - 1)
-            if u not in C and len(graph.adj[u]) > 0:
-                break
-        v = graph.adj[u][random.randint(0, len(graph.adj[u]) - 1)]
-
-        return (u, v)
-
-    while has_edges(graph):
-        u, v = get_random_edge()
-        C.add(u)
-        C.add(v)
-        for adj_vertex in graph.adj[u]:
-            graph.adj[adj_vertex].remove(u)
-        graph.adj[u] = []
-        for adj_vertex in graph.adj[v]:
-            graph.adj[adj_vertex].remove(v)
-        graph.adj[v] = []
-
-    return C
 
 
 def rand_graph(nodes, edges):
@@ -519,7 +481,8 @@ def worst_case_performance(approx, nodes, edges):
             approx_size = len(approx2(G))
         elif approx == 3:
             approx_size = len(approx3(G))
-        performance = max(performance, approx_size / MVC_size)
+        performance = max(performance, (approx_size / MVC_size))
+    print(performance)
     return performance
 
 
@@ -564,7 +527,7 @@ def MVC_exp2(edge_density):
 
 def MVC_exp3():
     nodes = 5
-    m = [5, 10, 15, 25, 35]
+    m = [2, 4, 6, 8]
     worst_perform1, worst_perform2, worst_perform3 = list(), list(), list()
     for i in m:
         print("done")
@@ -581,13 +544,14 @@ def MVC_exp3():
 
     plot.xlabel('Number of Edges')
     plot.ylabel('Performance')
-    plot.title('Performance vs Num Edges')
+    plot.title('Worst Case Performance vs Num Edges')
     plot.legend(loc=1)
     plot.show()
 
+# this runs each of the experiments
 
 # MVC_exp3()
-MVC_exp1(10)
+# MVC_exp1(10)
 # MVC_exp2(0.5)
 
 
