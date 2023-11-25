@@ -67,16 +67,23 @@ def dijkstra_approx(G, source, k):
     Q = min_heap2.MinHeap([])
     nodes = list(G.adj.keys())
 
+    # Relaxation Count dictionary that keeps track of how many times a node has been relaxed
+    relaxCount = {}
+
+    # Initialize relaxCount dictionary
+    for node in nodes:
+        relaxCount[node] = 0
+
     # Initialize priority queue/heap and distances
     for node in nodes:
         Q.insert(min_heap2.Element(node, float("inf")))
         dist[node] = float("inf")
 
-    # if k is 0, no vertex should be relaxed
-    if k == 0:
-        return dist
-
     Q.decrease_key(source, 0)
+    # if k is 0, all distances (except source node) should be infinite
+    if k == 0:
+        dist[source] = 0
+        return dist
 
     # Meat of the algorithm
     while not Q.is_empty():
@@ -84,19 +91,20 @@ def dijkstra_approx(G, source, k):
         current_node = current_element.value
         dist[current_node] = current_element.key
 
-        count = 0
         for neighbour in G.adj[current_node]:
+            # if neighbour node has already been relaxed k times, move to next neighbour node
+            if relaxCount[neighbour] == k:
+                continue
+
             if dist[current_node] + G.w(current_node, neighbour) < dist[neighbour]:
                 Q.decrease_key(
                     neighbour, dist[current_node] + G.w(current_node, neighbour)
                 )
                 dist[neighbour] = dist[current_node] + G.w(current_node, neighbour)
                 pred[neighbour] = current_node
-                count += 1
-                # Check if current_node has reached its max number of relaxations, k
-                if count == k:
-                    break
-        print("Number of relaxations on node {}: {}".format(current_node, count))
+
+                # update neighbour node relaxation count
+                relaxCount[neighbour] += 1
 
     return dist
 
@@ -142,16 +150,30 @@ def create_random_complete_graph(n, upper):
 # dijkstra_approx Testing
 """
 sampleGraph = create_random_complete_graph(4, 8)
-print(dijkstra(sampleGraph, 2))
+print(dijkstra(sampleGraph, 0))
 print("----------------------")
-print("Approximated dijkstra : {}".format(dijkstra_approx(sampleGraph,2,3)))
+print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph, 0, 3)))
 """
 
+"""
+sampleGraph = create_random_complete_graph(4, 8)
+print(dijkstra(sampleGraph, 2))
+print("----------------------")
+print("Approximated dijkstra : {}".format(dijkstra_approx(sampleGraph, 2, 3)))
+"""
 
+"""
+sampleGraph1 = create_random_complete_graph(7, 8)
+print(dijkstra(sampleGraph1, 0))
+print("----------------------")
+print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph1, 0, 6)))
+"""
+"""
 sampleGraph1 = create_random_complete_graph(7, 8)
 print(dijkstra(sampleGraph1, 2))
 print("----------------------")
-print("Approximated dijkstra : {}".format(dijkstra_approx(sampleGraph1, 2, 6)))
+print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph1, 2, 6)))
+"""
 
 
 # Assumes G represents its nodes as integers 0,1,...,(n-1)
