@@ -129,6 +129,45 @@ def bellman_ford(G, source):
     return dist
 
 
+# bellman ford approximation algorithm
+def bellman_ford_approx(G, source, k):
+    pred = {}  # Predecessor dictionary. Isn't returned, but here for your understanding
+    dist = {}  # Distance dictionary
+    nodes = list(G.adj.keys())
+
+    # Relaxation Count Dictionary that keeps track of how many times a node has been relaxed
+    relaxCount = {}
+
+    # Initialize Relaxation Count Dictionary
+    for node in nodes:
+        relaxCount[node] = 0
+
+    # Initialize distances
+    for node in nodes:
+        dist[node] = float("inf")
+    dist[source] = 0
+
+    # if k is 0, all the distances (except for source) should be infinity
+    if k == 0:
+        return dist
+
+    # Meat of the algorithm
+    for _ in range(G.number_of_nodes()):
+        for node in nodes:
+            for neighbour in G.adj[node]:
+                # if neighbour node has already been relaxed k times, skip to next neighbouring node
+                if relaxCount[neighbour] == k:
+                    continue
+
+                if dist[neighbour] > dist[node] + G.w(node, neighbour):
+                    dist[neighbour] = dist[node] + G.w(node, neighbour)
+                    pred[neighbour] = node
+
+                    # update neighbour node relaxation count
+                    relaxCount[neighbour] += 1
+    return dist
+
+
 def total_dist(dist):
     total = 0
     for key in dist.keys():
@@ -174,6 +213,29 @@ print(dijkstra(sampleGraph1, 2))
 print("----------------------")
 print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph1, 2, 6)))
 """
+
+# bellman_ford_approx Testing
+"""
+sampleGraph = create_random_complete_graph(5, 10)
+print(bellman_ford(sampleGraph, 0))
+print("--------------------------")
+print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 0, 4)))
+"""
+"""
+sampleGraph = create_random_complete_graph(5, 10)
+print(bellman_ford(sampleGraph, 2))
+print("--------------------------")
+print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 2, 7)))
+"""
+"""
+sampleGraph = create_random_complete_graph(8, 10)
+print(bellman_ford(sampleGraph, 2))
+print("--------------------------")
+print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 2, 0)))
+"""
+# sampleGraph = create_random_complete_graph(6, 10)
+# print(dijkstra(sampleGraph, 2))
+# print(bellman_ford(sampleGraph, 2))
 
 
 # Assumes G represents its nodes as integers 0,1,...,(n-1)
