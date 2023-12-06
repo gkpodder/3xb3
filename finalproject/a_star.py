@@ -2,9 +2,9 @@ from final_project_part1 import DirectedWeightedGraph
 import min_heap2
 import math
 import pandas as pd
-from final_project_part1 import dijkstra as dj
 import timeit
 import matplotlib.pyplot as plt
+
 
 stationslist=pd.read_csv("london_stations.csv")
 connectionslist=pd.read_csv("london_connections.csv")
@@ -21,18 +21,21 @@ for i, r in connectionslist.iterrows():
 
 station_coordinates = {r['id']:(r['latitude'],r['longitude']) for i, r in stationslist.iterrows()}
 
-def heuristic(node, goal):
-    # It should estimate the cost from the current node to the goal node
-    # The heuristic function should be admissible (never overestimates the true cost)
-    # use Euclidean distance as a heuristic function
-    #distance=sqrt((x2-x1)^2+(y2-y1)^2)
-    node_coords = station_coordinates[node]
-    goal_coords = station_coordinates[goal]
-    return math.sqrt((goal_coords[0] - node_coords[0])**2 + (goal_coords[1] - node_coords[1])**2)
-    pass
+def heuristic(station1, station2, coordinates):
+    coord1 = coordinates[station1]
+    coord2 = coordinates[station2]
+    return math.sqrt((coord2[0] - coord1[0])**2 + (coord2[1] - coord1[1])**2)
+
+def make_h(stations,station_coordinates):
+    precalculated_heuristics = {}
+    for source in stations:
+        for goal in stations:
+            if source != goal:
+                precalculated_heuristics[(source, goal)] = heuristic(source, goal, station_coordinates)
+    return precalculated_heuristics
 
 
-def a_star(G, source, goal):
+def a_star(G, source, goal,h):
     pred = {}  # Predecessor dictionary. Isn't returned, but here for your understanding
     dist = {}  # Distance dictionary
     Q = min_heap2.MinHeap([])
@@ -55,17 +58,16 @@ def a_star(G, source, goal):
 
         for neighbour in G.adj[current_node]:
             tentative_g = dist[current_node] + G.w(current_node, neighbour)
-            tentative_f = tentative_g + \
-                heuristic(neighbour, goal)  # A* specific part
+            tentative_f = tentative_g + h[(current_node, neighbour)]  # A* specific part
 
             if tentative_f < dist[neighbour]:
                 Q.decrease_key(neighbour, tentative_f)
                 dist[neighbour] = tentative_f
                 pred[neighbour] = current_node
 
-    return dist
+    return dist,pred
 
-def dijkstra(G, source, goal):
+def dj_2(G, source,goal):
     pred = {}  # Predecessor dictionary. Isn't returned, but here for your understanding
     dist = {}  # Distance dictionary
     Q = min_heap2.MinHeap([])
@@ -81,18 +83,7 @@ def dijkstra(G, source, goal):
     while not Q.is_empty():
         current_element = Q.extract_min()
         current_node = current_element.value
-
         dist[current_node] = current_element.key
-
-        # Check if the goal node is reached
-        if current_node == goal:
-            # Reconstruct the shortest path from goal to source
-            path = []
-            while current_node is not None:
-                path.insert(0, current_node)
-                current_node = pred.get(current_node, None)
-            return dist[goal], path  # Return distance and path to goal
-
         for neighbour in G.adj[current_node]:
             if dist[current_node] + G.w(current_node, neighbour) < dist[neighbour]:
                 Q.decrease_key(
@@ -101,7 +92,7 @@ def dijkstra(G, source, goal):
                 dist[neighbour] = dist[current_node] + G.w(current_node, neighbour)
                 pred[neighbour] = current_node
 
-    return dist  # Return the distance dictionary for all nodes if the goal isn't reached
+    return dist[goal]
 
 
 # start_id = 73  # Replace with actual source station ID
@@ -114,40 +105,52 @@ def dijkstra(G, source, goal):
 # print("Djikstra:\n")
 # print(generated_path2)
 
+def dj(G, source):
+    pred = {}  # Predecessor dictionary. Isn't returned, but here for your understanding
+    dist = {}  # Distance dictionary
+    Q = min_heap2.MinHeap([])
+    nodes = list(G.adj.keys())
+
+    # Initialize priority queue/heap and distances
+    for node in nodes:
+        Q.insert(min_heap2.Element(node, float("inf")))
+        dist[node] = float("inf")
+    Q.decrease_key(source, 0)
+
+    # Meat of the algorithm
+    while not Q.is_empty():
+        current_element = Q.extract_min()
+        current_node = current_element.value
+        dist[current_node] = current_element.key
+        for neighbour in G.adj[current_node]:
+            if dist[current_node] + G.w(current_node, neighbour) < dist[neighbour]:
+                Q.decrease_key(
+                    neighbour, dist[current_node] + G.w(current_node, neighbour)
+                )
+                dist[neighbour] = dist[current_node] + G.w(current_node, neighbour)
+                pred[neighbour] = current_node
+
+    return dist
 
 stations = [r['id'] for i, r in stationslist.iterrows()]
+def timing_exp(stations,graph_of_London,h):
+    for source in stations:
+        for goal in stations:
+                if source == goal:
+                    continue
+                a_star(graph_of_London, source, goal,h)
+            
+def dj_timing(graph,stations):
+    
+    for source in stations:
+        dj(graph, source)
 
 def experiment_every_pair():
-    #i=0
-    dijkstra_times = []
-    a_star_times = []
-
-    for source in stations:
-        dijkstra_time = 0
-        a_star_time = 0
-        #i+=1
-        #print(i)
-        #if(i==20): 
-         #   break
-
-        for goal in stations:
-            if source == goal:
-                continue
-            start = timeit.default_timer()
-            a_star(graph_of_London, source, goal)
-            a_star_time += timeit.default_timer() - start
-            start = timeit.default_timer()
-            dijkstra(graph_of_London, source, goal)
-            dijkstra_time += timeit.default_timer() - start
-        dijkstra_times.append(dijkstra_time)
-        a_star_times.append(a_star_time)
-    plt.plot(dijkstra_times, label="Dijkstra")
-    plt.plot(a_star_times, label="A*")
-    plt.legend()
-    plt.xlabel("Station Number")
-    plt.ylabel("Time (seconds)")
-    plt.title("Time to Calculate Shortest Path Pairs From Every Station")
-    plt.show()
+    h = make_h(stations,station_coordinates)
+    result_a_star=timeit.timeit(lambda: timing_exp(stations,graph_of_London,h),number=1)
+    result_dj = timeit.timeit(lambda: dj_timing(graph_of_London,stations),number=1)
+    print(result_a_star)
+    print(result_dj)
     
 experiment_every_pair()
 
@@ -161,7 +164,7 @@ def find_lines():
 def experiment_same_line():
     dijkstra_times = []
     astar_times = []
-    
+    h = make_h(stations,station_coordinates)
     lines = find_lines() 
     m_station_line = max(lines, key=lambda line_id: len(lines[line_id]))
     stations_sorted = sorted(lines[m_station_line])
@@ -169,22 +172,19 @@ def experiment_same_line():
     for station_start in stations_sorted:
         time_dijkstra = 0
         time_a_star = 0
-        
         for station_end in lines[m_station_line]:
             if station_start == station_end:
                 continue 
-
             start_time = timeit.default_timer()
-            a_star(graph_of_London, station_start, station_end)
+            a_star(graph_of_London, station_start, station_end,h)
+
             time_a_star += timeit.default_timer() - start_time
 
             start_time = timeit.default_timer()
-            dijkstra(graph_of_London, station_start, station_end)
+            dj_2(graph_of_London, station_start, station_end)
             time_dijkstra += timeit.default_timer() - start_time
-
         astar_times.append(time_a_star)
         dijkstra_times.append(time_dijkstra)
-
     plt.figure(figsize=(10, 5))
     plt.plot(astar_times, label="A* Algorithm")
     plt.plot(dijkstra_times, label="Dijkstra's Algorithm")
@@ -205,6 +205,7 @@ def diff_lines():
     lines = find_lines()
     line1_stations = list(lines[1])
     line4_stations = list(lines[4])
+    h = make_h(stations,station_coordinates)
 
     for s1 in line1_stations:
         dijkstra_time = 0
@@ -214,10 +215,10 @@ def diff_lines():
             if s1 == s2:
                 continue
             start = timeit.default_timer()
-            a_star(londonGraph, s1, s2)
+            a_star(londonGraph, s1, s2,h)
             a_star_time += timeit.default_timer() - start
             start = timeit.default_timer()
-            dijkstra(londonGraph, s1, s2)
+            dj_2(londonGraph, s1, s2)
             dijkstra_time += timeit.default_timer() - start
         a_star_times.append(a_star_time)
         dijkstra_times.append(dijkstra_time)
@@ -231,3 +232,33 @@ def diff_lines():
     plt.tight_layout()
     plt.show()
 diff_lines()
+
+def experiment_multiple_transfers():
+    dijkstra_times = []
+    a_star_times = []
+    h = make_h(stations, station_coordinates)
+    lines = find_lines()
+
+    transfer_stations_pairs = [(132, 268), (165, 216), (206, 217), (266, 268), (68, 283), (16, 93), (53, 160), (144, 278), (185, 279), (218, 227)] 
+    for (source, destination) in transfer_stations_pairs:
+        time_dijkstra = 0
+        time_a_star = 0
+        start_time = timeit.default_timer()
+        a_star(graph_of_London, source, destination, h)
+        time_a_star += timeit.default_timer() - start_time
+        start_time = timeit.default_timer()
+        dj_2(graph_of_London, source, destination)
+        time_dijkstra += timeit.default_timer() - start_time
+        a_star_times.append(time_a_star)
+        dijkstra_times.append(time_dijkstra)
+    plt.figure(figsize=(10, 5))
+    plt.plot(a_star_times, label="A* Algorithm")
+    plt.plot(dijkstra_times, label="Dijkstra's Algorithm")
+    plt.xlabel("Pair Index")
+    plt.ylabel("Total Time (seconds)")
+    plt.title("Performance Comparison of A* and Dijkstra for Stations Requiring Transfers")
+    plt.legend()
+    plt.show()
+
+experiment_multiple_transfers()
+
