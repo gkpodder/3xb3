@@ -188,11 +188,12 @@ def create_random_complete_graph(n, upper):
 
 # dijkstra_approx Testing
 """
-sampleGraph = create_random_complete_graph(4, 8)
-print(dijkstra(sampleGraph, 0))
+sampleGraph = create_random_complete_graph(6, 8)
+print(dijkstra(sampleGraph, 1))
 print("----------------------")
-print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph, 0, 3)))
+print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph, 1, 9)))
 """
+
 
 """
 sampleGraph = create_random_complete_graph(4, 8)
@@ -233,9 +234,11 @@ print(bellman_ford(sampleGraph, 2))
 print("--------------------------")
 print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 2, 0)))
 """
-# sampleGraph = create_random_complete_graph(6, 10)
-# print(dijkstra(sampleGraph, 2))
-# print(bellman_ford(sampleGraph, 2))
+"""
+sampleGraph = create_random_complete_graph(7, 9)
+print("Dijkstra Dictionary: {} ".format(dijkstra(sampleGraph, 1)))
+print("Bellman Dictionary: {} ".format(bellman_ford(sampleGraph, 1)))
+"""
 
 
 # Assumes G represents its nodes as integers 0,1,...,(n-1)
@@ -259,3 +262,17 @@ def init_d(G):
                 d[i][j] = G.w(i, j)
         d[i][i] = 0
     return d
+
+
+# sample Run
+testGraph = DirectedWeightedGraph()
+testGraph.add_node(0)
+testGraph.add_node(1)
+testGraph.add_node(2)
+testGraph.add_node(3)
+
+testGraph.add_edge(0, 1, 2)
+testGraph.add_edge(0, 2, -5)
+testGraph.add_edge(2, 3, -4)
+
+print(mystery(testGraph))
