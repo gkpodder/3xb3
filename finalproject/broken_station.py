@@ -51,4 +51,4 @@ m = 2
 
 result = bsp_value(sorted(a), n, m)
 print(result)
-bsp_solution(result, a, n, m)  # nlog(n-m)+n
+bsp_solution(result, a, n, m)  # ~O(nlog(n-m)+n)
