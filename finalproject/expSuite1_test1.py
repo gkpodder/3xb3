@@ -27,12 +27,6 @@ for element in relaxationValues:
     dijkstra_avgTimes.append(dijkstra_time / len(testGraphList))
     dijkstra_approx_avgTimes.append(dijkstra_approx_time / len(testGraphList))
 
-"""
-print(relaxationValues)
-print("Dijkstra Execution Times: {}".format(dijkstra_avgTimes))
-print("------------------------------------------------------")
-print("Dijkstra Approx Execution Times: {}".format(dijkstra_approx_avgTimes))
-"""
 
 plt.plot(relaxationValues, dijkstra_avgTimes, label="Dijkstra", color="red")
 plt.plot(
