@@ -264,7 +264,6 @@ def init_d(G):
     return d
 
 
-"""
 # sample Run
 testGraph = DirectedWeightedGraph()
 testGraph.add_node(0)
@@ -277,4 +276,3 @@ testGraph.add_edge(0, 2, -5)
 testGraph.add_edge(2, 3, -4)
 
 print(mystery(testGraph))
-"""
