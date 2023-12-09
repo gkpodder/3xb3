@@ -29,13 +29,6 @@ for element in relaxationValues:
     bellman_ford_approx_avgTimes.append(bellman_ford_approx_time / len(testGraphList))
     dijkstra_approx_avgTimes.append(dijkstra_approx_time / len(testGraphList))
 
-"""
-print(relaxationValues)
-print("Bellman Approx Execution Times: {}".format(bellman_ford_approx_avgTimes))
-print("------------------------------------------------------")
-print("Dijkstra Approx Execution Times: {}".format(dijkstra_approx_avgTimes))
-"""
-
 
 plt.plot(
     relaxationValues,

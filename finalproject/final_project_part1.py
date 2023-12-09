@@ -186,61 +186,6 @@ def create_random_complete_graph(n, upper):
     return G
 
 
-# dijkstra_approx Testing
-"""
-sampleGraph = create_random_complete_graph(6, 8)
-print(dijkstra(sampleGraph, 1))
-print("----------------------")
-print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph, 1, 9)))
-"""
-
-
-"""
-sampleGraph = create_random_complete_graph(4, 8)
-print(dijkstra(sampleGraph, 2))
-print("----------------------")
-print("Approximated dijkstra : {}".format(dijkstra_approx(sampleGraph, 2, 3)))
-"""
-
-"""
-sampleGraph1 = create_random_complete_graph(7, 8)
-print(dijkstra(sampleGraph1, 0))
-print("----------------------")
-print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph1, 0, 6)))
-"""
-"""
-sampleGraph1 = create_random_complete_graph(7, 8)
-print(dijkstra(sampleGraph1, 2))
-print("----------------------")
-print("Dijkstra Approximation: {}".format(dijkstra_approx(sampleGraph1, 2, 6)))
-"""
-
-# bellman_ford_approx Testing
-"""
-sampleGraph = create_random_complete_graph(5, 10)
-print(bellman_ford(sampleGraph, 0))
-print("--------------------------")
-print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 0, 4)))
-"""
-"""
-sampleGraph = create_random_complete_graph(5, 10)
-print(bellman_ford(sampleGraph, 2))
-print("--------------------------")
-print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 2, 7)))
-"""
-"""
-sampleGraph = create_random_complete_graph(8, 10)
-print(bellman_ford(sampleGraph, 2))
-print("--------------------------")
-print("Bellman Ford Approximation: {}".format(bellman_ford_approx(sampleGraph, 2, 0)))
-"""
-"""
-sampleGraph = create_random_complete_graph(7, 9)
-print("Dijkstra Dictionary: {} ".format(dijkstra(sampleGraph, 1)))
-print("Bellman Dictionary: {} ".format(bellman_ford(sampleGraph, 1)))
-"""
-
-
 # Assumes G represents its nodes as integers 0,1,...,(n-1)
 def mystery(G):
     n = G.number_of_nodes()
@@ -264,6 +209,7 @@ def init_d(G):
     return d
 
 
+"""
 # sample Run
 testGraph = DirectedWeightedGraph()
 testGraph.add_node(0)
@@ -276,3 +222,4 @@ testGraph.add_edge(0, 2, -5)
 testGraph.add_edge(2, 3, -4)
 
 print(mystery(testGraph))
+"""

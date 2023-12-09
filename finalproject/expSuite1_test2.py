@@ -24,11 +24,6 @@ for element in relaxationValues:
     dijkstra_avgDistances.append(dijkstra_dist / len(testGraphList))
     dijkstra_approx_avgDistances.append(dijkstra_approx_dist / len(testGraphList))
 
-"""
-print("Dijkstra's Average Distances: {}".format(dijkstra_avgDistances))
-print("--------------------------------------------------------------")
-print("Dijkstra Approx Average Distances: {}".format(dijkstra_approx_avgDistances))
-"""
 
 plt.plot(relaxationValues, dijkstra_avgDistances, label="Dijkstra", color="red")
 plt.plot(
