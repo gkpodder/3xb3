@@ -45,7 +45,7 @@ def bsp_solution(mid, a, n, m):
 
 
 # Example usage
-a = [1, 2, 8, 9, 10, 18]  # [2, 4, 6, 7, 10, 14]
+a = [2, 4, 6, 7, 10, 14]
 n = len(a)
 m = 2
 

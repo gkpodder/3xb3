@@ -82,7 +82,7 @@ class Dijkstra(SPAlgorithm):
                         G.w(current_node, neighbour)
                     pred[neighbour] = current_node
 
-        if dest is not None:
+        if dest is not None:  # target node is specified
             return dist[dest]
         else:
             return dist
